@@ -1,0 +1,74 @@
+version: '3'
+
+networks:
+  vapor:
+    driver: bridge
+
+services:
+  postgres:
+    container_name: postgres
+    image: postgres:14.1-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: postgres
+    ports:
+      - '5432:5432'
+    restart: unless-stopped
+    tty: true
+    networks:
+      - vapor
+
+  redis:
+    container_name: redis
+    image: redis:7.0
+    restart: always
+    ports:
+      - '6379:6379'
+    networks:
+      - vapor
+
+  api:
+    container_name: api
+    build:
+      context: .
+      dockerfile: dev-env/vapor.dockerfile
+    command: >
+      sh -c "if [ ! -f ".env" ]; then cp .env.example .env ; fi &&
+        tail -f /dev/null"
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./api:/usr/src/api
+    networks:
+      - vapor
+    depends_on:
+      - postgres
+    links:
+      - postgres
+
+  # client:
+  #   container_name: client
+  #   build:
+  #     context: .
+  #     dockerfile: dev-env/client.dockerfile
+  #   command: tail -f /dev/null
+  #   ports:
+  #     - "3000:3000"
+  #   volumes:
+  #     - ./client:/usr/src/client
+  #   networks:
+  #     - vapor
+
+  # playwright:
+  #   container_name: playwright
+  #   build:
+  #     context: .
+  #     dockerfile: dev-env/playwright.dockerfile
+  #   command: tail -f /dev/null
+  #   ports:
+  #     - "3001:3001"
+  #   volumes:
+  #     - ./client:/usr/src/client
+  #   networks:
+  #     - vapor
