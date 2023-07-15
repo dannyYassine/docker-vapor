@@ -20,12 +20,14 @@ dev-daemon:
 	docker-compose up -d
 down:
 	docker-compose down
+setup-api:
+	docker exec -it api . setup-vapor.sh
 api-install:
 	docker exec -it api composer install --no-cache --ignore-platform-reqs
 api-debug:
 	docker exec -it api php artisan serve --host 0.0.0.0 --port 8000
 api-serve:
-	docker exec -it api php artisan octane:start --server=swoole --watch --workers=2 --max-requests=250 --host=0.0.0.0 --port=8000
+	docker exec -it api swift run App serve --hostname 0.0.0.0 --port 8080
 api-ssh:
 	docker exec -it api /bin/bash
 api-restart:
