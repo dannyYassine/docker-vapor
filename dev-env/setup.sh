@@ -6,8 +6,7 @@
 
 ###############################################################
 
-# Run Artisan commands to set up keys and configs
-docker-compose exec php php artisan config:clear
+#. setup-vapor.sh
 
 # Run all migrations
-docker-compose exec php php artisan migrate:fresh --seed
+docker-compose exec api swift run App migrate

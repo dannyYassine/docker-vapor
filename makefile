@@ -20,8 +20,8 @@ dev-daemon:
 	docker-compose up -d
 down:
 	docker-compose down
-setup-api:
-	docker exec -it api . setup-vapor.sh
+setup:
+	dev-env/setup.sh
 api-install:
 	docker exec -it api composer install --no-cache --ignore-platform-reqs
 api-debug:
@@ -44,10 +44,6 @@ migrate:
 	docker exec -it api php artisan migrate
 pre-setup:
 	dev-env/pre-setup.sh
-setup:
-	make build
-	make dev-daemon
-	make post-setup
 post-setup:
 	dev-env/setup.sh
 build-deploy-php:
